@@ -15,7 +15,8 @@ class NotesController < ApplicationController
 
   # POST /notes
   def create
-    @note = Note.new(note_params)
+    note_klass = params[:data][:type].singularize.titlecase.constantize
+    @note = note_klass.new(note_params)
 
     if @note.save
       render json: @note, status: :created, location: @note
@@ -46,6 +47,6 @@ class NotesController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def note_params
-      params.require(:note).permit(:type, :title, :description, :contact_id, :topic_id)
+      params.require(:data).require(:attributes).permit(:title, :description)
     end
 end
